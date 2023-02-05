@@ -5,10 +5,12 @@ from aiogram import (
     types,
 )
 from autocorrect import Speller
-import googletrans
+from googletrans import Translator
 import asyncio
+import googletrans
+import languages
 
-API_TOKEN = "HERE YOUR API TOKEN"
+API_TOKEN = "api token"
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
@@ -72,14 +74,19 @@ async def checklang(message: types.Message):
         await asyncio.sleep(0.1)
         #определяет язык
         language = googletrans.Translator().detect(message.text[6:]).lang
-        if len(language)>1:
-            await message.reply(language)
-            await message.reply('Я думаю что это '+' '.join(language))
-        if len(language)==1:
-            await message.reply(language)
-            await message.reply(f'Я думаю что это {language}!')
+        if len(language) > 1:
+            await message.reply('Я думаю что это '+' '.join(languages.ln_lang[language]))
+        if len(language) == 1:
+            await message.reply(f'Я думаю что это {languages.ln_lang[language]}!')
     except Exception as error:
         await message.reply('ошибка {}'.format(error))
+
+@dp.message_handler(commands=['translate'])
+async def checklang(message: types.Message):
+    tr = Translator()
+    src = tr.detect(message.text[11:]).lang
+    translated = tr.translate(text = message.text[11:], src = src, dest = 'ru')
+    await message.reply(f'Перевод текста/слова: {translated.text}')
 
 if __name__ == '__main__':   
     executor.start_polling(dp, skip_updates=True)
