@@ -8,7 +8,7 @@ from autocorrect import Speller
 import googletrans
 import asyncio
 
-API_TOKEN = "6057131630:AAGWqg0HfiGvMl65-l5NMVcEFXGxsR4vR-I"
+API_TOKEN = "HERE YOUR API TOKEN"
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
