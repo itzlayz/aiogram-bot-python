@@ -108,5 +108,5 @@ ln_lang = {
 }
 
 configuration = {
-    'token': '6057131630:AAGWqg0HfiGvMl65-l5NMVcEFXGxsR4vR-I'
+    'token': 'your_token'
 }
