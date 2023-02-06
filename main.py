@@ -8,9 +8,9 @@ from autocorrect import Speller
 from googletrans import Translator
 import asyncio
 import googletrans
-import languages
+import config
 
-API_TOKEN = "api token"
+API_TOKEN = config.configuration['token']
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
@@ -75,18 +75,33 @@ async def checklang(message: types.Message):
         #определяет язык
         language = googletrans.Translator().detect(message.text[6:]).lang
         if len(language) > 1:
-            await message.reply('Я думаю что это '+' '.join(languages.ln_lang[language]))
+            await message.reply('Я думаю что это '+' '.join(config.ln_lang[language]))
         if len(language) == 1:
-            await message.reply(f'Я думаю что это {languages.ln_lang[language]}!')
+            await message.reply(f'Я думаю что это {config.ln_lang[language]}!')
     except Exception as error:
         await message.reply('ошибка {}'.format(error))
 
-@dp.message_handler(commands=['translate'])
-async def checklang(message: types.Message):
+#переводит текст на русский язык
+@dp.message_handler(commands=['transru'])
+async def translaterussian(message: types.Message):
     tr = Translator()
-    src = tr.detect(message.text[11:]).lang
-    translated = tr.translate(text = message.text[11:], src = src, dest = 'ru')
-    await message.reply(f'Перевод текста/слова: {translated.text}')
+    src = tr.detect(message.text[9:]).lang
+    if src == "ru":
+        await message.reply(f'В вашем сообщение нету слова или текста, или текст/слово написан(о) на русском')
+    else:
+        translated = tr.translate(text = message.text[9:], src = src, dest = 'ru')
+        await message.reply(f'Перевод текста/слова на русский язык: {translated.text}')
+
+#переводит текст на английский язык
+@dp.message_handler(commands=['transeng'])
+async def translateenligsh(message: types.Message):
+    tr = Translator()
+    src = tr.detect(message.text[10:]).lang
+    if src == "en":
+        await message.reply(f'В вашем сообщение нету слова или текста, или текст/слово написан(о) на английском')
+    else:
+        translated = tr.translate(text = message.text[10:], src = src, dest = 'en')
+        await message.reply(f'Перевод текста/слова на английский язык: {translated.text}')
 
 if __name__ == '__main__':   
     executor.start_polling(dp, skip_updates=True)
